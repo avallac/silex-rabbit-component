@@ -1,0 +1,26 @@
+{
+  "name": "avallac/silex-rabbit-component",
+  "license": "MIT",
+  "type": "library",
+  "homepage": "https://github.com/avallac/silex-rabbit-component",
+  "description": "A Silex component for working with RabbitMQ",
+  "keywords": ["silex", "RabbitMQ"],
+  "require": {
+    "silex/silex": "~2.0",
+    "avallac/silex-jsonvalidator-component": "^1.0",
+    "php-amqplib/php-amqplib": "^2.7"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.4",
+    "mockery/mockery": "^0.9.5"
+  },
+  "autoload": {
+    "psr-4": { "AVAllAC\\RabbitComponent\\": "src/" }
+  },
+  "authors": [
+    {
+      "name": "Petr Petrenko",
+      "role": "maintainer"
+    }
+  ]
+}
