@@ -12,7 +12,9 @@ class RabbitChannelProvider implements ServiceProviderInterface
     {
         $app['rabbitChannel'] = function () use ($app) {
             if ($app['amqp'] instanceof AbstractConnection) {
-                return $app['amqp']->channel();
+                $channel = $app['amqp']->channel();
+                $channel->basic_qos(0, 1, true);
+                return $channel;
             } else {
                 throw new \Exception('require AbstractConnection on "amqp"');
             }
