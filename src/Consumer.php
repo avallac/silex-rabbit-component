@@ -63,7 +63,7 @@ class Consumer
             $read = [$this->socket];
             $write = null;
             $except = null;
-            $changeStreamsCount = stream_select($read, $write, $except, 60);
+            $changeStreamsCount = @stream_select($read, $write, $except, 60);
             pcntl_signal_dispatch();
             if (!$this->receivedBreak) {
                 if ($changeStreamsCount === false) {
