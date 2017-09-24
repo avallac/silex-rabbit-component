@@ -72,6 +72,7 @@ class Consumer
                     $this->channel->wait();
                 }
             }
+            pcntl_signal_dispatch();
         }
     }
 }
