@@ -28,7 +28,7 @@ class Consumer
         });
     }
 
-    protected function initConsume($qName, MessageManager $manager)
+    public function initConsume($qName, MessageManager $manager)
     {
         $fnCallback = function ($rabbitMessage) use ($manager) {
             $code = $manager->handle($rabbitMessage);
@@ -54,11 +54,10 @@ class Consumer
         }
     }
 
-    public function run($qName, $manager)
+    public function run()
     {
         $this->initSignalHandlers();
         $this->checkExternalServices();
-        $this->initConsume($qName, $manager);
         while (count($this->channel->callbacks) && !$this->receivedBreak) {
             $read = [$this->socket];
             $write = null;
