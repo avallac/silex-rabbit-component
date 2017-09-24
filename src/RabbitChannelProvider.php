@@ -1,6 +1,6 @@
 <?php
 
-namespace AVAllAC\JsonValidatorComponent;
+namespace AVAllAC\RabbitComponent;
 
 use PhpAmqpLib\Connection\AbstractConnection;
 use Pimple\Container;
