@@ -53,6 +53,9 @@ class Consumer
     public function run()
     {
         $this->initSignalHandlers();
+        if (sizeof($this->channel->getMethodQueue())) {
+            $this->channel->wait();
+        }
         while (count($this->channel->callbacks) && !$this->receivedBreak) {
             $read = [$this->socket];
             $write = null;
