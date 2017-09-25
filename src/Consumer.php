@@ -16,6 +16,16 @@ class Consumer
     public function __construct($app)
     {
         $this->app = $app;
+        if ($this->app['amqp'] instanceof AbstractConnection) {
+            $this->socket = $this->app['amqp']->getSocket();
+        } else {
+            throw new \Exception('require AbstractConnection on "amqp"');
+        }
+        if ($this->app['rabbitChannel'] instanceof AMQPChannel) {
+            $this->channel = $this->app['rabbitChannel'];
+        } else {
+            throw new \Exception('require AMQPChannel on "rabbitChannel"');
+        }
     }
 
     protected function initSignalHandlers()
@@ -40,24 +50,9 @@ class Consumer
 
     }
 
-    protected function checkExternalServices()
-    {
-        if ($this->app['amqp'] instanceof AbstractConnection) {
-            $this->socket = $this->app['amqp']->getSocket();
-        } else {
-            throw new \Exception('require AbstractConnection on "amqp"');
-        }
-        if ($this->app['rabbitChannel'] instanceof AMQPChannel) {
-            $this->channel = $this->app['rabbitChannel'];
-        } else {
-            throw new \Exception('require AMQPChannel on "rabbitChannel"');
-        }
-    }
-
     public function run()
     {
         $this->initSignalHandlers();
-        $this->checkExternalServices();
         while (count($this->channel->callbacks) && !$this->receivedBreak) {
             $read = [$this->socket];
             $write = null;
