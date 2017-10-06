@@ -32,7 +32,7 @@ abstract class ActiveMessage extends AbstractMessage
         return true;
     }
 
-    public function send(array $params, $prior = null)
+    public function send(array $params, $prior = null, $queue = null)
     {
         if ($this->app['rabbitChannel'] instanceof AMQPChannel) {
             /** @var AMQPChannel $channel */
@@ -43,11 +43,12 @@ abstract class ActiveMessage extends AbstractMessage
         $outM = $this->create($params);
         $prior = $prior === null ? $this->prior : $prior;
         $msg = new AMQPMessage($outM, ['priority' => $prior]);
-        if (strpos($this->workQueue, '@') !== false) {
-            $q = explode('@', $this->workQueue);
+        $queue = $queue ?: $this->workQueue;
+        if (strpos($queue, '@') !== false) {
+            $q = explode('@', $queue);
             $channel->basic_publish($msg, $q[1], $q[0]);
         } else {
-            $channel->basic_publish($msg, '', $this->workQueue);
+            $channel->basic_publish($msg, '', $queue);
         }
     }
 }
