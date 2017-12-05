@@ -28,6 +28,11 @@ class Consumer
         }
     }
 
+    public function stop()
+    {
+        $this->receivedBreak = 1;
+    }
+
     protected function initSignalHandlers()
     {
         pcntl_signal(SIGTERM, function () {
@@ -40,10 +45,21 @@ class Consumer
 
     public function initConsume($qName, MessageManager $manager)
     {
-        $fnCallback = function ($rabbitMessage) use ($manager) {
-            $code = $manager->handle($rabbitMessage);
-            if ($code !== MessageManager::NO_ACK_MESSAGE) {
-                $this->channel->basic_ack($rabbitMessage->delivery_info['delivery_tag']);
+        $fnCallback = function ($rabbitMessage) use ($manager, $qName) {
+            try {
+                $code = $manager->handle($rabbitMessage);
+                if ($code !== MessageManager::NO_ACK_MESSAGE) {
+                    $this->channel->basic_ack($rabbitMessage->delivery_info['delivery_tag']);
+                }
+
+            } catch (\Exception $e) {
+                $property = $rabbitMessage->get_properties();
+                $deliveryTag = $rabbitMessage->delivery_info['delivery_tag'];
+                if (isset($property['priority'])) {
+                    $rabbitMessage->set('priority', max($property['priority'] - 1, 1));
+                }
+                $this->channel->basic_publish($rabbitMessage, '', $qName);
+                $this->channel->basic_ack($deliveryTag);
             }
         };
         $this->channel->basic_consume($qName, '', false, false, false, false, $fnCallback);
