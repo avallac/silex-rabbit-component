@@ -55,7 +55,7 @@ class ConsumerTest extends \PHPUnit_Framework_TestCase
                 }
             }
 
-            public function validate(MQMessage $message)
+            public function validate(MQMessage $message) : bool
             {
                 return true;
             }

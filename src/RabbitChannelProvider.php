@@ -8,6 +8,10 @@ use Pimple\ServiceProviderInterface;
 
 class RabbitChannelProvider implements ServiceProviderInterface
 {
+    /**
+     * @param Container $app
+     * @throws \Exception
+     */
     public function register(Container $app)
     {
         $app['rabbitChannel'] = function () use ($app) {

@@ -4,6 +4,8 @@ namespace AVAllAC\RabbitComponent;
 
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
+use PhpAmqpLib\Message\AMQPMessage;
+use Silex\Application;
 
 class Consumer
 {
@@ -13,7 +15,12 @@ class Consumer
     /** @var AMQPChannel $channel */
     protected $channel;
 
-    public function __construct($app)
+    /**
+     * Consumer constructor.
+     * @param Application $app
+     * @throws \Exception
+     */
+    public function __construct(Application $app)
     {
         $this->app = $app;
         if ($this->app['amqp'] instanceof AbstractConnection) {
@@ -45,7 +52,7 @@ class Consumer
 
     public function initConsume($qName, MessageManager $manager)
     {
-        $fnCallback = function ($rabbitMessage) use ($manager, $qName) {
+        $fnCallback = function (AMQPMessage $rabbitMessage) use ($manager, $qName) {
             try {
                 $code = $manager->handle($rabbitMessage);
                 if ($code !== MessageManager::NO_ACK_MESSAGE) {

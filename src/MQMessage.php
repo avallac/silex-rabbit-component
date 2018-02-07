@@ -30,35 +30,42 @@ class MQMessage
 
     public function __construct($param)
     {
-        if (is_array($param)) {
-            $this->data = $param;
+        if ($param instanceof \stdClass) {
+            $this->data = (object)$param;
+        } elseif (is_array($param)) {
+            $this->data = (object)json_decode(json_encode($param));
         } else {
-            $this->data = json_decode($param, true);
+            $this->data = (object)json_decode($param);
         }
     }
 
-    public function getData()
+    public function getData() : \stdClass
     {
-        return (object)$this->data;
+        return $this->data;
     }
 
-    public function __toString()
+    public function __toString() : string
     {
         return (string)json_encode($this->data);
     }
 
-    public function get($name)
+    /**
+     * @param string $name
+     * @throws |AVAllAC\RabbitComponent|CantFindFieldInMessageViolationException
+     * @return mixed
+     */
+    public function get(string $name)
     {
         if ($this->exists($name)) {
-            return $this->data[$name];
+            return $this->data->{$name};
         } else {
             throw new CantFindFieldInMessageViolationException($name);
         }
     }
 
-    public function exists($name)
+    public function exists($name) : bool
     {
-        if (array_key_exists($name, $this->data)) {
+        if (property_exists($this->data, $name)) {
             return true;
         } else {
             return false;

@@ -11,7 +11,12 @@ abstract class AbstractMessage
         return $this->getCommand();
     }
 
-    public function create(array $params)
+    /**
+     * @param array $params
+     * @return MQMessage
+     * @throws \AVAllAC\RabbitComponent\NotValidMessageViolationException
+     */
+    public function create(array $params) : MQMessage
     {
         $params['command'] = $this->getCommand();
         $outM = new MQMessage($params);

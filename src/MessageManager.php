@@ -37,6 +37,7 @@ class MessageManager
     /**
      * @param $key
      * @return AbstractMessage|null
+     * @throws |AVAllAC\RabbitComponent|CantFindMessageViolationException
      */
     public function getMessage($key)
     {

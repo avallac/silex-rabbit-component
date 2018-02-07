@@ -18,7 +18,12 @@ abstract class ActiveMessage extends AbstractMessage
         $this->app = $app;
     }
 
-    public function validate(MQMessage $message)
+    /**
+     * @param MQMessage $message
+     * @throws \Exception
+     * @return bool
+     */
+    public function validate(MQMessage $message) : bool
     {
         if ($this->app['jsonValidator'] instanceof JsonValidatorService) {
             /** @var JsonValidatorService $validator */
@@ -32,7 +37,13 @@ abstract class ActiveMessage extends AbstractMessage
         return true;
     }
 
-    public function send(array $params, $prior = null, $queue = null)
+    /**
+     * @param array $params
+     * @param int $prior
+     * @param string $queue
+     * @throws \Exception
+     */
+    public function send(array $params, int $prior = null, string $queue = null)
     {
         if ($this->app['rabbitChannel'] instanceof AMQPChannel) {
             /** @var AMQPChannel $channel */
