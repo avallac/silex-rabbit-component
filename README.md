@@ -9,7 +9,7 @@ Install the silex-rabbit-component using [composer](http://getcomposer.org/).  T
 [sematic versioning](http://semver.org/).
 
 ```bash
-composer require avallac/silex-rabbit-component "~1.0"
+composer require avallac/silex-rabbit-component "~2.0"
 ```
 
 Parameters
