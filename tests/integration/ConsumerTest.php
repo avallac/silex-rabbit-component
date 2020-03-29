@@ -2,11 +2,11 @@
 
 namespace AVAllAC\RabbitComponent;
 
-
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Silex\Application;
+use PHPUnit\Framework\TestCase;
 
-class ConsumerTest extends \PHPUnit_Framework_TestCase
+class ConsumerTest extends TestCase
 {
     public function testErrorHandler()
     {
