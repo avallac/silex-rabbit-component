@@ -2,7 +2,9 @@
 
 namespace AVAllAC\RabbitComponent;
 
-class MQMessageTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class MQMessageTest extends TestCase
 {
     public function testInputArray()
     {
@@ -28,12 +30,10 @@ class MQMessageTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($m->get('p'), 1);
     }
 
-    /**
-     * @expectedException \AVAllAC\RabbitComponent\CantFindFieldInMessageViolationException
-     */
     public function testGetBad()
     {
         $m = new MQMessage(['p' => 1]);
+        $this->expectException(CantFindFieldInMessageViolationException::class);
         $this->assertSame($m->get('d'), null);
     }
 
