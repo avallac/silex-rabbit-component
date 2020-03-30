@@ -15,6 +15,7 @@ class Consumer
     /** @var AMQPChannel $channel */
     protected $channel;
     protected $preHandler = null;
+    protected $postHandler = null;
 
     /**
      * Consumer constructor.
@@ -41,6 +42,11 @@ class Consumer
         $this->preHandler = $preHandler;
     }
 
+    public function setPostHandler($postHandler)
+    {
+        $this->postHandler = $postHandler;
+    }
+
     public function stop()
     {
         $this->receivedBreak = 1;
@@ -60,12 +66,16 @@ class Consumer
     {
         $fnCallback = function (AMQPMessage $rabbitMessage) use ($manager, $qName, $catchExceptions) {
             try {
+                $begin = microtime(true);
                 if (is_callable($this->preHandler)) {
                     call_user_func($this->preHandler, $rabbitMessage);
                 }
                 $code = $manager->handle($rabbitMessage);
                 if ($code !== MessageManager::NO_ACK_MESSAGE) {
                     $this->channel->basic_ack($rabbitMessage->delivery_info['delivery_tag']);
+                }
+                if (is_callable($this->postHandler)) {
+                    call_user_func($this->postHandler, $rabbitMessage, microtime(true) - $begin);
                 }
 
             } catch (\Exception $e) {
